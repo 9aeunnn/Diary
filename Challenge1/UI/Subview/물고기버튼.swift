@@ -226,14 +226,18 @@ struct 헬멧버튼: View {
 }
 
 struct 저장버튼: View {
+    var isValid: Bool
+    var action: () -> Void
+    
     var body: some View {
-        Button(action:{
-        }) {
+        Button(action: action) {
             Image("저장")
+                .opacity(isValid ? 1.0 : 0.4)  // 내용 없으면 흐리게
         }
+        .disabled(!isValid)
     }
 }
 
 #Preview {
-    저장버튼()
+
 }

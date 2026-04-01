@@ -15,7 +15,8 @@ struct ContentView: View {
                     Image("배경")
                     Image("4월")
                         .offset(x: -130, y: -900)
-                        
+                    
+                    
                         
                     NavigationLink {
                         Diary()
@@ -52,7 +53,7 @@ struct ContentView: View {
                         .offset(x: 10, y: -670)
                     
                     NavigationLink {
-                        Diary()
+                        finish()
                     }label: {
                         Image("6")
                     }
@@ -104,6 +105,7 @@ struct ContentView: View {
                 }
             }
             .ignoresSafeArea()
+
         }
     }
 }
