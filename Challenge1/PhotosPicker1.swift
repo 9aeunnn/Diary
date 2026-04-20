@@ -4,6 +4,7 @@ import PhotosUI
 
 struct PhotosSelector1: View {
     var size: CGFloat
+    
     @State var selectedItems: PhotosPickerItem?
     @State var selectedImage: UIImage?
 
@@ -38,5 +39,5 @@ struct PhotosSelector1: View {
 
 
 #Preview {
-    Diary()
+    Diary(selectedDate: Date(), existingDiary: nil)
 }

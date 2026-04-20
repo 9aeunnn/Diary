@@ -36,3 +36,7 @@ struct PhotosSelector2: View {
         }
     }
 }
+
+#Preview {
+    Diary(selectedDate: Date(), existingDiary: nil)
+}

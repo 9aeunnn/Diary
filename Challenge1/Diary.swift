@@ -2,15 +2,20 @@ import SwiftUI
 import SwiftData
 
 struct Diary: View {
+    let selectedDate: Date
+    let existingDiary: DiaryItem?
     
-    @Environment(\.modelContext) private var context
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
     
-//    var editingEntry: DiaryEntry? = nil
-    
-    @State private var names: [String] = ["기쁨", "분노", "슬픔", "C1", "C2"]
-    @State private var nameToAdd = ""
-    @State private var selectedNames: [String] = ["", "", ""]
-    @State private var text = ""
+    @State private var tag1: String = ""
+    @State private var tag2: String = ""
+    @State private var tag3: String = ""
+    @State private var tags: [String] = ["기쁨", "분노", "슬픔", "C1", "C2"]
+    @State private var tagToAdd: String = ""
+    @State private var content: String = ""
+    @State private var image1Name: String = ""
+    @State private var image2Name: String = ""
     
     @FocusState private var focusedField: Field?
     
@@ -20,107 +25,93 @@ struct Diary: View {
     }
     
     private var isFormValid: Bool {
-        !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        !content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     
     var body: some View {
         ZStack {
-            // 배경 자체를 탭했을 때만 키보드 내리기
             Image("속지배경")
                 .ignoresSafeArea()
                 .onTapGesture {
                     focusedField = nil
                 }
             
+            // 키워드
             VStack {
                 HStack(spacing: 25) {
                     Menu {
-                        ForEach(names, id: \.self) { name in
-                            Button(name) { selectedNames[0] = name }
+                        ForEach(tags, id: \.self) { tag in
+                            Button(tag) { tag1 = tag }
                         }
                     } label: {
-                        HStack {
-                            Text(selectedNames[0].isEmpty ? "키워드1" : selectedNames[0])
-                                .fontWeight(.semibold)
-                            Image(systemName: "chevron.down")
-                        }
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 10)
-                        .background(.ultraThinMaterial)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .foregroundColor(.primary)
+                        keywordLabel(text: tag1.isEmpty ? "키워드1" : tag1)
                     }
                     
                     Menu {
-                        ForEach(names, id: \.self) { name in
-                            Button(name) { selectedNames[1] = name }
+                        ForEach(tags, id: \.self) { tag in
+                            Button(tag) { tag2 = tag }
                         }
                     } label: {
-                        HStack {
-                            Text(selectedNames[1].isEmpty ? "키워드2" : selectedNames[1])
-                                .fontWeight(.semibold)
-                            Image(systemName: "chevron.down")
-                        }
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 10)
-                        .background(.ultraThinMaterial)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .foregroundColor(.primary)
+                        keywordLabel(text: tag2.isEmpty ? "키워드2" : tag2)
                     }
                     
                     Menu {
-                        ForEach(names, id: \.self) { name in
-                            Button(name) { selectedNames[2] = name }
+                        ForEach(tags, id: \.self) { tag in
+                            Button(tag) { tag3 = tag }
                         }
                     } label: {
-                        HStack {
-                            Text(selectedNames[2].isEmpty ? "키워드3" : selectedNames[2])
-                                .fontWeight(.semibold)
-                            Image(systemName: "chevron.down")
-                        }
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 10)
-                        .background(.ultraThinMaterial)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .foregroundColor(.primary)
+                        keywordLabel(text: tag3.isEmpty ? "키워드3" : tag3)
                     }
                 }
                 
-                // 키워드 추가
+                // Add Keywords
                 HStack {
-                    TextField("Add Keywords", text: $nameToAdd)
-                        .autocorrectionDisabled()
-                    //.textFieldStyle(.roundedBorder)
-                        .focused($focusedField, equals: .keyword)
-                    
-                    Button {
-                        let trimmed = nameToAdd.trimmingCharacters(in: .whitespacesAndNewlines)
-                        if !trimmed.isEmpty {
-                            names.append(trimmed)
-                            nameToAdd = ""
-                            focusedField = nil   // 추가 후 키보드 내리고 싶으면 유지
+                    ZStack{
+                        // Add Keywords 배경
+                        RoundedRectangle(cornerRadius: 15)
+                            .fill(Color.white.opacity(0.4))
+                            .frame(width: 380, height: 40)
+                            .offset(x: 0, y: 0)
+                        
+                        HStack {
+                            TextField("Add Keywords", text: $tagToAdd)
+                                .autocorrectionDisabled()
+                                .focused($focusedField, equals: .keyword)
+                                .offset(x: 20, y: 0)
+                            
+                            Button {
+                                let trimmed = tagToAdd.trimmingCharacters(in: .whitespacesAndNewlines)
+                                if !trimmed.isEmpty && !tags.contains(trimmed) {
+                                    tags.append(trimmed)
+                                    tagToAdd = ""
+                                    focusedField = nil
+                                }
+                            } label: {
+                                Text("추가")
+                                    
+                            }
+                            .padding(.horizontal, 10)
                         }
-                    } label: {
-                        Text("추가")
                     }
+                    .padding()
+
                 }
-                .padding()
                 
-                // 일기 입력창
-                ZStack() {
+                // 일기 작성
+                ZStack(alignment: .topLeading) {
                     RoundedRectangle(cornerRadius: 15)
                         .fill(Color.white.opacity(0.5))
                         .frame(width: 380, height: 350)
                     
-                    if text.isEmpty {
+                    if content.isEmpty {
                         Text("Write a diary")
                             .foregroundColor(.gray)
                             .padding(.top, 18)
                             .padding(.leading, 18)
+                            .allowsHitTesting(false)
                     }
                     
-                    //일기 입력창
-                    TextEditor(text: $text)
+                    TextEditor(text: $content)
                         .focused($focusedField, equals: .diary)
                         .padding(12)
                         .frame(width: 380, height: 350)
@@ -129,9 +120,9 @@ struct Diary: View {
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
                 }
                 .padding(.bottom, 150)
-                
             }
             
+            // 사진 넣기
             ZStack {
                 Circle()
                     .frame(width: 250, height: 250)
@@ -152,51 +143,86 @@ struct Diary: View {
                     .offset(x: 80, y: 300)
             }
         }
+        //저장 버튼
+        
+        
         .overlay(alignment: .topTrailing) {
-                저장버튼(isValid: isFormValid) {
-                    print("저장 버튼 눌림")
-//                    saveOrUpdate()
-                }
-//                .border(.black, width: 2)
-                .padding(.top, 60)
-                .padding(.trailing, 20)
-                .zIndex(999)
-            
+//            Button("저장"){
+            저장버튼(isValid: isFormValid) {
+                saveDiary()
+            }
+            .padding(.top, 60)
+            .padding(.trailing, 20)
+            .zIndex(999)
         }
-//        .onAppear {
-//            if let entry = editingEntry {
-//                selectedNames = entry.emotions
-//                text = entry.content
-//            }
-//        }
-
+        .onAppear {
+            loadExistingDiary()
+        }
     }
     
-//    private func saveOrUpdate() {
-//        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-//        guard !trimmed.isEmpty else {
-//            print("저장 실패: 내용이 비어 있음")
-//            return
-//        }
-//
-//        do {
-//            if let entry = editingEntry {
-//                entry.emotions = selectedNames
-//                entry.content = trimmed
-//                try context.save()
-//                print("기존 일기 수정 완료")
-//            } else {
-//                let entry = DiaryEntry(emotions: selectedNames, content: trimmed)
-//                context.insert(entry)
-//                try context.save()
-//                print("새 일기 저장 완료")
-//            }
-//        } catch {
-//            print("SwiftData 저장 에러:", error)
-//        }
-//    }
+    private func loadExistingDiary() {
+        guard let existingDiary else { return }
+        
+        tag1 = existingDiary.tag1
+        tag2 = existingDiary.tag2
+        tag3 = existingDiary.tag3
+        tags = existingDiary.tags
+        tagToAdd = existingDiary.tagToAdd
+        content = existingDiary.content
+        image1Name = existingDiary.image1Name
+        image2Name = existingDiary.image2Name
+    }
+    
+    private func saveDiary() {
+        do {
+            if let existingDiary {
+                existingDiary.tag1 = tag1
+                existingDiary.tag2 = tag2
+                existingDiary.tag3 = tag3
+                existingDiary.tags = tags
+                existingDiary.tagToAdd = tagToAdd
+                existingDiary.content = content
+                existingDiary.date = selectedDate
+                existingDiary.image1Name = image1Name
+                existingDiary.image2Name = image2Name
+            } else {
+                let newDiary = DiaryItem(
+                    tag1: tag1,
+                    tag2: tag2,
+                    tag3: tag3,
+                    tags: tags,
+                    tagToAdd: tagToAdd,
+                    date: selectedDate,
+                    content: content,
+                    image1Name: image1Name,
+                    image2Name: image2Name
+                )
+                modelContext.insert(newDiary)
+            }
+            
+            try modelContext.save()
+            print("저장 성공:", selectedDate, content)
+            dismiss()
+        } catch {
+            print("저장 실패:", error.localizedDescription)
+        }
+    }
+    
+    @ViewBuilder
+    private func keywordLabel(text: String) -> some View {
+        HStack {
+            Text(text)
+                .fontWeight(.semibold)
+            Image(systemName: "chevron.down")
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 10)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .foregroundColor(.primary)
+    }
 }
 
 #Preview {
-    Diary()
+    Diary(selectedDate: Date(), existingDiary: nil)
 }

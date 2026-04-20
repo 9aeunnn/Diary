@@ -1,12 +1,5 @@
-//
-//  Challenge1App.swift
-//  Challenge1
-//
-//  Created by 김가은 on 3/24/26.
-//
-
 import SwiftUI
-
+import SwiftData
 
 @main
 struct Challenge1App: App {
@@ -14,7 +7,6 @@ struct Challenge1App: App {
         WindowGroup {
             ContentView()
         }
-
+        .modelContainer(for: DiaryItem.self)
     }
-    
 }
