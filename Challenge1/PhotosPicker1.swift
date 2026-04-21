@@ -1,36 +1,32 @@
 import SwiftUI
 import PhotosUI
 
-
 struct PhotosSelector1: View {
-    var size: CGFloat
-    
-    @State var selectedItems: PhotosPickerItem?
-    @State var selectedImage: UIImage?
+    let size: CGFloat
+    @Binding var imageData: Data?
+    @State private var selectedItem: PhotosPickerItem?
 
     var body: some View {
-        ZStack(alignment: .center) {
-            PhotosPicker(selection: $selectedItems,
-                         matching: .images) {
-                if let image = selectedImage {
-                    Image(uiImage: image)
+        PhotosPicker(selection: $selectedItem, matching: .images) {
+            ZStack {
+                if let imageData,
+                   let uiImage = UIImage(data: imageData) {
+                    Image(uiImage: uiImage)
                         .resizable()
                         .scaledToFill()
-                        .clipShape(Circle())
                         .frame(width: size, height: size)
-                        .opacity(0.8)
+                        .clipShape(Circle())
                 } else {
-                    Text("사진 선택")
+                    Text("사진 추가")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(.blue)
                 }
             }
         }
-        
-        .onChange(of: selectedItems) { _, newItem in
-            guard let newItem  else { return }
+        .onChange(of: selectedItem) { _, newItem in
             Task {
-                if let data = try? await newItem.loadTransferable(type: Data.self),
-                   let uiImage = UIImage(data: data) {
-                    selectedImage = uiImage
+                if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                    imageData = data
                 }
             }
         }

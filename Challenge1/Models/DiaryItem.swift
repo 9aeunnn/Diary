@@ -10,9 +10,9 @@ class DiaryItem {
     var tagToAdd: String
     var date: Date
     var content: String
-    var image1Name: String
-    var image2Name: String
-    
+    var image1Data: Data?
+    var image2Data: Data?
+
     init(
         tag1: String,
         tag2: String,
@@ -21,8 +21,10 @@ class DiaryItem {
         tagToAdd: String,
         date: Date,
         content: String,
-        image1Name: String,
-        image2Name: String
+        image1Data: Data? = nil,
+        image2Data: Data? = nil
+        
+        
     ) {
         self.tag1 = tag1
         self.tag2 = tag2
@@ -31,7 +33,7 @@ class DiaryItem {
         self.tagToAdd = tagToAdd
         self.date = date
         self.content = content
-        self.image1Name = image1Name
-        self.image2Name = image2Name
-    }
+        self.image1Data = image1Data
+        self.image2Data = image2Data
+        }
 }

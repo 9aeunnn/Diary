@@ -14,8 +14,8 @@ struct Diary: View {
     @State private var tags: [String] = ["기쁨", "분노", "슬픔", "C1", "C2"]
     @State private var tagToAdd: String = ""
     @State private var content: String = ""
-    @State private var image1Name: String = ""
-    @State private var image2Name: String = ""
+    @State private var image1Data: Data?
+    @State private var image2Data: Data?
     
     @FocusState private var focusedField: Field?
     
@@ -30,7 +30,7 @@ struct Diary: View {
     
     var body: some View {
         ZStack {
-            Image("속지배경")
+            Image("찐일기배경")
                 .ignoresSafeArea()
                 .onTapGesture {
                     focusedField = nil
@@ -123,6 +123,7 @@ struct Diary: View {
             }
             
             // 사진 넣기
+            // 사진 선택 → imageData로 Diary에 전달 → saveDiary에서 저장
             ZStack {
                 Circle()
                     .frame(width: 250, height: 250)
@@ -130,7 +131,7 @@ struct Diary: View {
                     .foregroundColor(.white)
                     .opacity(0.3)
                     .shadow(color: .primary, radius: 10, x: 5, y: 5)
-                PhotosSelector1(size: 250)
+                PhotosSelector1(size: 250, imageData: $image1Data)
                     .offset(x: -80, y: 300)
                 
                 Circle()
@@ -139,12 +140,12 @@ struct Diary: View {
                     .foregroundColor(.white)
                     .opacity(0.3)
                     .shadow(color: .primary, radius: 10, x: 5, y: 5)
-                PhotosSelector2(size: 210)
+                PhotosSelector2(size: 210, imageData: $image2Data)
                     .offset(x: 80, y: 300)
             }
         }
-        //저장 버튼
         
+        //저장 버튼
         
         .overlay(alignment: .topTrailing) {
 //            Button("저장"){
@@ -162,15 +163,15 @@ struct Diary: View {
     
     private func loadExistingDiary() {
         guard let existingDiary else { return }
-        
+
         tag1 = existingDiary.tag1
         tag2 = existingDiary.tag2
         tag3 = existingDiary.tag3
         tags = existingDiary.tags
         tagToAdd = existingDiary.tagToAdd
         content = existingDiary.content
-        image1Name = existingDiary.image1Name
-        image2Name = existingDiary.image2Name
+        image1Data = existingDiary.image1Data
+        image2Data = existingDiary.image2Data
     }
     
     private func saveDiary() {
@@ -183,8 +184,8 @@ struct Diary: View {
                 existingDiary.tagToAdd = tagToAdd
                 existingDiary.content = content
                 existingDiary.date = selectedDate
-                existingDiary.image1Name = image1Name
-                existingDiary.image2Name = image2Name
+                existingDiary.image1Data = image1Data
+                existingDiary.image2Data = image2Data
             } else {
                 let newDiary = DiaryItem(
                     tag1: tag1,
@@ -194,12 +195,12 @@ struct Diary: View {
                     tagToAdd: tagToAdd,
                     date: selectedDate,
                     content: content,
-                    image1Name: image1Name,
-                    image2Name: image2Name
+                    image1Data: image1Data,
+                    image2Data: image2Data
                 )
                 modelContext.insert(newDiary)
             }
-            
+
             try modelContext.save()
             print("저장 성공:", selectedDate, content)
             dismiss()

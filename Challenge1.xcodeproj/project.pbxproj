@@ -10,9 +10,34 @@
 		CC63B85F2F7220FD00DDD92A /* Challenge1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Challenge1.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CCE46E982F8DF03600A887C7 /* Exceptions for "Challenge1" folder in "Challenge1" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				data/CustomDataPicker.swift,
+				Info.plist,
+			);
+			target = CC63B85E2F7220FD00DDD92A /* Challenge1 */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		CC947A582F908C350079037E /* Exceptions for "Challenge1" folder in "Copy Bundle Resources" phase from "Challenge1" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = CC63B85D2F7220FD00DDD92A /* Resources */;
+			membershipExceptions = (
+				data/CustomDataPicker.swift,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		CC63B8612F7220FD00DDD92A /* Challenge1 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CCE46E982F8DF03600A887C7 /* Exceptions for "Challenge1" folder in "Challenge1" target */,
+				CC947A582F908C350079037E /* Exceptions for "Challenge1" folder in "Copy Bundle Resources" phase from "Challenge1" target */,
+			);
 			path = Challenge1;
 			sourceTree = "<group>";
 		};
@@ -258,7 +283,10 @@
 				DEVELOPMENT_TEAM = 88KQGUY6Q4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Challenge1/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = "카권(카메라 권한이라는 뜻)";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "사진권한";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -291,7 +319,10 @@
 				DEVELOPMENT_TEAM = 88KQGUY6Q4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Challenge1/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = "카권(카메라 권한이라는 뜻)";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "사진권한";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
